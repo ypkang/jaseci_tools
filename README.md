@@ -1,3 +1,14 @@
+## Running Jaseci Server on clarity3
+Standing up Jaseci Deployment
+```
+kubectl apply -f https://raw.githubusercontent.com/daynauth/jaseci_tools/master/manifests/jaseci.yaml
+```
+
+Deleting Jaseci Deployment
+```
+kubectl delete -f https://raw.githubusercontent.com/daynauth/jaseci_tools/master/manifests/jaseci.yaml
+```
+
 ## Running modules locally on clarity3
 ### Example - Bi Encoder
 
