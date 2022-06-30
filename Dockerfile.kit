@@ -1,0 +1,6 @@
+FROM jaseci-core
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install fasttext
+RUN cd jaseci/jaseci_kit && sh install.sh  
