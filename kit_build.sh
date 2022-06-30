@@ -1,1 +1,1 @@
-docker build -f Dockerfile.kit . -t jaseci-core-kit
+docker build -f Dockerfile.kit . -t jaseci-kit
