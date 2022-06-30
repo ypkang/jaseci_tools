@@ -1,0 +1,1 @@
+docker build -t jaseci-core -f Dockerfile.core .
