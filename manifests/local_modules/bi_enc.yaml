@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bi-enc-local
+spec:
+  selector:
+    pod: bi-enc-local
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bi-enc-local-up
+  namespace: default
+data:
+  prod_up: |-
+    uvicorn jaseci_kit.bi_enc:serv_actions --host 0.0.0.0 --port 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bi-enc-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: bi-enc-local
+  template:
+    metadata:
+      labels:
+        pod: bi-enc-local
+      name: bi-enc-local
+    spec:
+      nodeSelector:
+        node-network: clarity3
+      containers:
+        - name: bi-enc-local
+          imagePullPolicy: IfNotPresent
+          image: daynauth/jaseci-kit:latest 
+          resources:
+            requests:
+              memory: "2Gi"
+            limits:
+              memory: "8Gi"
+          command: [bash, -c, "source script/prod_up"]
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: prod-script
+              mountPath: /script
+
+      volumes:
+        - name: prod-script
+          configMap:
+            name: bi-enc-local-up
