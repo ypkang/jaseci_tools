@@ -2,4 +2,4 @@ FROM daynauth/jaseci-kit:latest
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN pip install --no-cache-dir --upgrade pip
-RUN cd jaseci/jaseci_serv && sh install.s
+RUN cd jaseci/jaseci_serv && sh install.sh
