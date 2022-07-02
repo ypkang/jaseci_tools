@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: js-segmenter
+spec:
+  selector:
+    pod: js-segmenter
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: js-segmenter-up
+  namespace: default
+data:
+  prod_up: |-
+    cd /jaseci/jaseci_kit/jaseci_kit/modules/text_segmenter
+    uvicorn text_segmenter:serv_actions --host 0.0.0.0 --port 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: js-segmenter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: js-segmenter
+  template:
+    metadata:
+      labels:
+        pod: js-segmenter
+      name: js-segmenter
+    spec:
+      nodeSelector:
+        node-network: clarity2
+      containers:
+        - name: js-segmenter
+          image: daynauth/text_segmenter
+          env: 
+          - name: TRANSFORMERS_OFFLINE
+            value: "1"
+          resources:
+            requests:
+              memory: "500Mi"
+          command: [bash, -c, "source script/prod_up"]
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: prod-script
+              mountPath: /script
+
+      volumes:
+        - name: prod-script
+          configMap:
+            name: js-segmenter-up
